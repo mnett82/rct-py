@@ -3,34 +3,32 @@ import ctypes
 import numpy as np
 import os
 
-if os.name == 'posix':
-    _library_extension = '.so'
-elif os.name == 'nt':
-    _library_extension = '.dll'
-else:
-    raise RuntimeError("Unsupported operating system for shared library loading.")
-
-_library_path = os.path.join(os.path.dirname(__file__),
-                             f'rct{_library_extension}')
-
-try:
-    _c_lib = ctypes.CDLL(_library_path)
-except OSError as e:
-    print(f"Error loading shared library: {e}")
-    print(f"Please ensure '{_library_path}' exists and is compiled correctly.")
-    exit(1)
-
-_c_lib.rct_build.argtypes = [c_ulong, c_int, c_float, c_float, c_void_p, c_int, c_int]
-_c_lib.rct_build.restype = c_void_p
-
-_c_lib.rct_destroy.argtypes = [c_void_p]
-_c_lib.rct_destroy.restype = None
-
-_c_lib.rct_find_near.argtypes = [c_void_p, c_void_p, c_int, POINTER(c_int)]
-_c_lib.rct_find_near.restype = c_int
 
 class RCT:
+    _c_lib = None
+
     def __init__(self):
+        if RCT._c_lib == None:
+            if os.name == 'posix':
+                _libext = 'so'
+            elif os.name == 'nt':
+                _libext = 'dll'
+            else:
+                raise RuntimeError("Unsupported operating system for shared library loading")
+
+            try:
+                RCT._c_lib = ctypes.CDLL(f'librct.{_libext}')
+            except OSError as e:
+                printf(f"Error loading librct.{_libext}: {e}")
+                raise
+
+            RCT._c_lib.rct_build.argtypes = [c_ulong, c_int, c_float, c_float, c_void_p, c_int, c_int]
+            RCT._c_lib.rct_build.restype = c_void_p
+            RCT._c_lib.rct_destroy.argtypes = [c_void_p]
+            RCT._c_lib.rct_destroy.restype = None
+            RCT._c_lib.rct_find_near.argtypes = [c_void_p, c_void_p, c_int, POINTER(c_int)]
+            RCT._c_lib.rct_find_near.restype = c_int
+
         self._rct = None
         self._data = None
         self._seed = 0
@@ -40,7 +38,7 @@ class RCT:
         
     def __del__(self):
         if self._rct != None:
-            _c_lib.rct_destroy(self._rct)
+            RCT._c_lib.rct_destroy(self._rct)
             self._rct = None    
     
     def fit(self, X: np.ndarray):
@@ -56,13 +54,13 @@ class RCT:
         rows, cols = X.shape
         self._sample_rate = rows ** (1/3)
 
-        self._rct = _c_lib.rct_build(self._seed,
-                                     self._verbosity,
-                                     self._coverage,
-                                     self._sample_rate,
-                                     self._data.ctypes.data_as(c_void_p),
-                                     rows,
-                                     cols)
+        self._rct = RCT._c_lib.rct_build(self._seed,
+                                         self._verbosity,
+                                         self._coverage,
+                                         self._sample_rate,
+                                         self._data.ctypes.data_as(c_void_p),
+                                         rows,
+                                         cols)
 
     def query(self, q: np.array, n: int) -> np.array:
         if q.ndim != 1:
@@ -75,7 +73,7 @@ class RCT:
         result = np.zeros(n, dtype=np.int32)
         result_ptr = result.ctypes.data_as(POINTER(c_int))
 
-        _c_lib.rct_find_near(self._rct, q_ptr, n, result_ptr)
+        RCT._c_lib.rct_find_near(self._rct, q_ptr, n, result_ptr)
 
         return result
 
