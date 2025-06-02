@@ -11,7 +11,7 @@ else:
     raise RuntimeError("Unsupported operating system for shared library loading.")
 
 _library_path = os.path.join(os.path.dirname(__file__),
-                             f'bindings{_library_extension}')
+                             f'rct{_library_extension}')
 
 try:
     _c_lib = ctypes.CDLL(_library_path)
