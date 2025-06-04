@@ -101,6 +101,7 @@ extern "C" int rct_find_near(
 
     // Vec query(wrapper->cols, static_cast<float *>(query_ptr));
     Vec query(wrapper->points[0].v.size(), static_cast<float *>(query_ptr));
+    printf("query=%s\n", query.debugString().c_str());
 
     std::vector<int> ids;
     ids.reserve(wrapper->points.size());
@@ -108,6 +109,7 @@ extern "C" int rct_find_near(
         ids.push_back(i);
     }
     std::vector<float> dists(wrapper->points.size(), -1.0);
+    printf("Created buffers...\n");
 
     std::sort(
         ids.begin(),
@@ -121,6 +123,7 @@ extern "C" int rct_find_near(
             }
             return dists[ids[i]] < dists[ids[j]];
         });
+    printf("sorted!\n");
 
     if (static_cast<int>(ids.size()) > how_many) {
         ids.resize(how_many);
