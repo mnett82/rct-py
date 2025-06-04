@@ -28,6 +28,7 @@ struct Vec final : public DistData
             const float s = v[i] - p->v[i];
             d += s * s;
         }
+        printf("%f\n", d);
         return sqrtf(d);
     }
 
@@ -103,15 +104,15 @@ extern "C" int rct_find_near(
     const int num_found = wrapper->rct->findNearest(&query, how_many);
     wrapper->rct->getResultIndices(result, num_found);
 
-    printf("<<%d", result[0]);
-    for (int i = 1; i < num_found; ++i) {
-        printf(" %d", result[i]);
-    }
-    printf(">>\n");
+    // printf("<<%d", result[0]);
+    // for (int i = 1; i < num_found; ++i) {
+    //     printf(" %d", result[i]);
+    // }
+    // printf(">>\n");
 
-    for (int i = 0; i < num_found; ++i) {
-        printf("#%d --> %s\n", i, wrapper->points[result[i]].debugString().c_str());
-    }
+    // for (int i = 0; i < num_found; ++i) {
+    //     printf("#%d --> %s\n", i, wrapper->points[result[i]].debugString().c_str());
+    // }
 
     return num_found;
 }
