@@ -45,10 +45,10 @@ struct Vec final : public DistData
 
 struct RctWrapper
 {
-    int cols = 0;
+    // int cols = 0;
     std::vector<Vec> points = {};
-    std::vector<DistData *> data = {};
-    std::unique_ptr<RCT> rct = nullptr;
+    // std::vector<DistData *> data = {};
+    // std::unique_ptr<RCT> rct = nullptr;
 };
 
 extern "C" void *rct_build(
@@ -99,7 +99,8 @@ extern "C" int rct_find_near(
 {
     auto *wrapper = static_cast<RctWrapper *>(_wrapper);
 
-    Vec query(wrapper->cols, static_cast<float *>(query_ptr));
+    // Vec query(wrapper->cols, static_cast<float *>(query_ptr));
+    Vec query(wrapper->points[0].v.size(), static_cast<float *>(query_ptr));
 
     std::vector<int> ids;
     ids.reserve(wrapper->points.size());
