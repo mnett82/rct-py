@@ -39,7 +39,10 @@ class RCT:
     def __del__(self):
         if self._rct != None:
             RCT._c_lib.rct_destroy(self._rct)
-            self._rct = None    
+            self._rct = None
+
+    def set_coverage(self, coverage: float):
+        self._coverage = coverage
     
     def fit(self, X: np.ndarray):
         if not isinstance(X, np.ndarray):
