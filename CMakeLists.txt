@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10) # Or a newer version you prefer
 
 project(rct CXX)
+add_compile_options(-Wall -Wextra -pedantic)
 
 add_library(rct SHARED bindings.cc rct.cpp random.cpp)
 

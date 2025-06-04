@@ -13,7 +13,7 @@ struct Vec final : public DistData
 
     Vec(std::size_t len, float *values) {
         v.reserve(len);
-        for (int i = 0 ;i < len; ++i) {
+        for (std::size_t i = 0 ; i < len; ++i) {
             v.push_back(values[i]);
         }
     }
@@ -23,7 +23,7 @@ struct Vec final : public DistData
         const Vec *p = static_cast<Vec *>(other);
 
         float d = 0.0f;
-        for (int i = 0; i < v.size(); ++i)
+        for (std::size_t i = 0; i < v.size(); ++i)
         {
             const float s = v[i] - p->v[i];
             d += s * s;
@@ -34,7 +34,7 @@ struct Vec final : public DistData
     std::string debugString() {
         std::ostringstream out;
         out << "Vec(" << v[0];
-        for (int i = 1; i < v.size(); ++i) {
+        for (std::size_t i = 1; i < v.size(); ++i) {
             out << ", " << v[i];
         }
         out << ")";

@@ -31,10 +31,10 @@ private:
 
 protected:
         //! Hide the copy constructor.
-        Random(const Random&) {}
+        Random(const Random&) = delete;
 
         //! Hide the assignment operator.
-        Random& operator=(const Random&) {}
+        Random& operator=(const Random&) = delete;
 
 public:
         //! Default constructor.

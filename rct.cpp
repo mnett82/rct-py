@@ -265,7 +265,7 @@ int RCT::build(const char* fileName, DistData** inputData, const int& numItems) 
     int lvl = 0;
     int loc = 0;
     int inLevel = 0;
-    int temp = 0;
+    // int temp = 0;
     int inSize = 0;
     int inLevels = 0;
     int inNumNodes = 0;
@@ -1390,7 +1390,7 @@ int RCT::doFindNear(int howMany, int sampleLevel, float scaleFactor) {
     int child = 0;
     int nodeIndex = 0;
     int numChildren = 0;
-    int tempQueryResultSize = 0;
+    // int tempQueryResultSize = 0;
     double varQuota = 0.0F;
     int numFound = 0;
     int numRetained = 0;
@@ -1509,7 +1509,7 @@ int RCT::doFindNearest(int howMany, int sampleLevel) {
 
 	queryResultSize = partialQuickSort(howMany, queryResultDistList, queryResultIndexList, 0, queryResultSize - 1);
 
-    return queryResultSize;
+    return howMany > queryResultSize ? queryResultSize : howMany;
 }
 
 /*!
@@ -1551,7 +1551,7 @@ int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rang
         pairs.emplace_back(distList[i], indexList[i]);
     }
     std::sort(pairs.begin(), pairs.end());
-    for (int i = 0; i < pairs.size(); ++i) {
+    for (std::size_t i = 0; i < pairs.size(); ++i) {
         distList[rangeFirst + i] = pairs[i].first;
         indexList[rangeFirst + i] = pairs[i].second;
     }
@@ -2304,7 +2304,7 @@ void RCT::setNewQuery(DistData* query) {
 void RCT::setupLevels(int numItems, int numParents) {
     int i;
     int lvl;
-    float coin = 0.0f;
+    // float coin = 0.0f;
     int* maxLevelList = NULL;
 
     size = numItems;
