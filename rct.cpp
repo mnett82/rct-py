@@ -1535,7 +1535,7 @@ int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rang
 
     std::vector<std::pair<float, int>> pairs;
     pairs.reserve(rangeLast - rangeFirst + 1);
-    for (int i = rangeFirst; i <= rangeLast; ++i) {
+    for (int i = rangeFirst; i < rangeLast; ++i) {
         pairs.emplace_back(distList[i], indexList[i]);
     }
     std::sort(pairs.begin(), pairs.end());
