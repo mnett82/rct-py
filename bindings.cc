@@ -109,7 +109,7 @@ extern "C" int rct_find_near(
     printf(">>\n");
 
     for (int i = 0; i < num_found; ++i) {
-        printf("#%d --> %s\n", i, static_cast<Vec*>(wrapper->data[result[i]])->debugString().c_str());
+        printf("#%d --> %s\n", i, wrapper->points[result[i]].debugString().c_str());
     }
 
     return num_found;
