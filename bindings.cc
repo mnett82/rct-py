@@ -88,5 +88,11 @@ extern "C" int rct_find_near(
     const int num_found = wrapper->rct->findNearest(&query, how_many);
     wrapper->rct->getResultIndices(result, num_found);
 
+    printf("<<%d", result[0]);
+    for (int i = 1; i < num_found; ++i) {
+        printf(" %d", result[i]);
+    }
+    printf(">>\n");
+
     return num_found;
 }

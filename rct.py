@@ -76,9 +76,7 @@ class RCT:
         results = np.zeros(n, dtype=np.int32)
         results_ptr = results.ctypes.data_as(POINTER(c_int))
 
-        print(results)
         RCT._c_lib.rct_find_near(self._rct, q_ptr, n, results_ptr)
-        print(results)
 
         return results
 
