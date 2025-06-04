@@ -1,3 +1,4 @@
+#include <sstream>
 #include <cmath>
 #include <cstdio>
 #include <vector>
@@ -24,6 +25,15 @@ struct Vec final : public DistData
             d += s * s;
         }
         return sqrtf(d);
+    }
+
+    std::string debugString() {
+        std::ostringstream out;
+        out << "Vec(" << values[0];
+        for (int i = 1; i < len; ++i) {
+            out << ", " << values[i];
+        }
+        out << ")";
     }
 };
 
@@ -93,6 +103,10 @@ extern "C" int rct_find_near(
         printf(" %d", result[i]);
     }
     printf(">>\n");
+
+    for (int i = 0; i < num_found; ++i) {
+        printf("#%d --> %s\n", i, static_cast<Vec*>(wrapper->data[results[i]])->debugString().c_str());
+    }
 
     return num_found;
 }
