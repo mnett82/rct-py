@@ -28,7 +28,6 @@ struct Vec final : public DistData
             const float s = v[i] - p->v[i];
             d += s * s;
         }
-        printf("%f\n", d);
         return sqrtf(d);
     }
 
