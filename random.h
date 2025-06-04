@@ -1,57 +1,66 @@
-#ifndef RANDOM_H_
-#define RANDOM_H_
+#ifndef __MTRAND_H
+#define __MTRAND_H
 
 class Random {
- private:
-  //! The size of the state vector.
-  static const int n = 624;
 
-  //! A magic number.
-  static const int m = 397;
+private:
+        //! The size of the state vector.
+        static const int n = 624;
 
-  //! The generator's state vector.
-  static unsigned long state[n];
+        //! A magic number.
+        static const int m = 397;
 
-  //! The position in the state vector.
-  static int p;
+        //! The generator's state vector.
+        static unsigned long state[n];
 
-  //! Was the generator intialized?
-  static bool init;
+        //! The position in the state vector.
+        static int p;
 
-  //! Bit twiddling used by the generator.
-  inline unsigned long twiddle(const unsigned long& u,
-                               const unsigned long& v) const {
-    return (((u & 0x80000000UL) | (v & 0x7FFFFFFFUL)) >> 1) ^
-           ((v & 1UL) ? 0x9908B0DFUL : 0x0UL);
-  }
+        //! Was the generator intialized?
+        static bool init;
 
-  //! Generate the next state vector.
-  void gen_state();
+        //! Bit twiddling used by the generator.
+        inline unsigned long twiddle(const unsigned long& u,
+                const unsigned long& v) const {
+                return (((u & 0x80000000UL) | (v & 0x7FFFFFFFUL)) >> 1)
+                                ^ ((v & 1UL) ? 0x9908B0DFUL : 0x0UL);
+        }
 
- public:
-  //! Default constructor.
-  Random();
+        //! Generate the next state vector.
+        void gen_state();
 
-  //! Seed the generator.
-  Random(const unsigned long& s);
+protected:
+        //! Hide the copy constructor.
+        Random(const Random&) {}
 
-  //! Seed with an array of values.
-  Random(const unsigned long* array, const unsigned long& size);
+        //! Hide the assignment operator.
+        Random& operator=(const Random&) {}
 
-  //! Seed the generator from an integer.
-  Random& seed(const unsigned long& s);
+public:
+        //! Default constructor.
+        Random();
 
-  //! Seed the generator from an array of integers.
-  Random& seed(const unsigned long* array, const unsigned long& size);
+        //! Seed the generator.
+        Random(const unsigned long& s);
 
-  //! Make the generator a functor.
-  double operator()();
+        //! Seed with an array of values.
+        Random(const unsigned long* array, const unsigned long& size);
 
-  //! The destructor.
-  virtual ~Random() {}
+        //! Seed the generator from an integer.
+        Random& seed(const unsigned long& s);
 
-  //! Generate a 32-bit random integer.
-  unsigned long integer();
-};
+        //! Seed the generator from an array of integers.
+        Random& seed(const unsigned long* array, const unsigned long& size);
 
-#endif  // RANDOM_H_
+        //! Make the generator a functor.
+        double operator()();
+
+        //! The destructor.
+        virtual ~Random() {}
+
+        //! Generate a 32-bit random integer.
+        unsigned long integer();
+
+} /* .. */;
+
+#endif /* __MTRAND_H */
