@@ -1528,7 +1528,9 @@ int RCT::doFindNearest(int howMany, int sampleLevel) {
  *
  * @return Number of items sorted.
  */
+//#define WTF
 int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rangeFirst, int rangeLast) {
+#ifdef WTF
     if (rangeLast < rangeFirst || howMany < 1) {
         return 0;
     }
@@ -1544,389 +1546,387 @@ int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rang
         indexList[rangeFirst + i] = pairs[i].second;
     }
     return rangeLast - rangeFirst + 1;
-
-
-
-
-//     int i;
-//     int pivotLoc = 0;
-//     int pivotIndex = 0;
-//     float pivotDist = 0.0F;
-//     int tempIndex = 0;
-//     float tempDist = 0.0F;
-//     int low = 0;
-//     int high = 0;
-//     int numFound = 0;
-//     int numDuplicatesToReplace = 0;
-//     int tieBreakIndex = 0;
-
-//     // If the range is empty, or if we've been asked to sort no
-//     //   items, then return immediately.
-
-//     if ((rangeLast < rangeFirst) || (howMany < 1)) {
-//         return 0;
-//     }
-
-//     // If there is exactly one element, then again there is nothing
-//     //   that need be done.
-
-//     if (rangeLast == rangeFirst) {
-//         return 1;
-//     }
-
-//     // If the range to be sorted is small, just do an insertion sort.
-
-//     if (rangeLast - rangeFirst < 7) {
-//         high = rangeFirst + 1;
-//         tieBreakIndex = indexList[rand.integer() % (rangeLast - rangeFirst + 1)];
-
-//         // The outer while loop considers each item in turn (starting
-//         //   with the second item in the range), for insertion into
-//         //   the sorted list of items that precedes it.
-
-//         while (high <= rangeLast) {
-//             // Copy the next item to be inserted, as the "pivot".
-//             // Start the insertion tests with its immediate predecessor.
-
-//             pivotDist = distList[high];
-//             pivotIndex = indexList[high];
-//             low = high - 1;
-
-//             // Work our way down through previously-sorted items
-//             //   towards the start of the range.
-
-//             while (low >= rangeFirst) {
-//                 // Compare the item to be inserted (the "pivot") with
-//                 //   the current item.
-
-//                 if (distList[low] < pivotDist) {
-//                     // The current item precedes the pivot in the sorted order.
-//                     // Break out of the loop - we have found the insertion point.
-
-//                     break;
-//                 } else if (distList[low] > pivotDist) {
-//                     // The current item follows the pivot in the sorted order.
-//                     // Shift the current item one spot upwards, to make room
-//                     //   for inserting the pivot below it.
-
-//                     distList[low + 1] = distList[low];
-//                     indexList[low + 1] = indexList[low];
-//                     low--;
-//                 } else {
-//                     if (indexList[low] != pivotIndex) {
-//                         // The items have the same sort value but are not identical.
-//                         // Break the tie pseudo-randomly.
-
-//                         if (
-//                                 (
-//                                 (tieBreakIndex >= pivotIndex)
-//                                 &&
-//                                 (
-//                                 (indexList[low] < pivotIndex)
-//                                 ||
-//                                 (tieBreakIndex < indexList[low])
-//                                 )
-//                                 )
-//                                 ||
-//                                 (
-//                                 (tieBreakIndex < pivotIndex)
-//                                 &&
-//                                 (
-//                                 (indexList[low] < pivotIndex)
-//                                 &&
-//                                 (tieBreakIndex < indexList[low])
-//                                 )
-//                                 )
-//                                 ) {
-//                             // The current item precedes the pivot in the sorted order.
-//                             // Break out of the loop - we have found the insertion point.
-
-//                             break;
-//                         } else {
-//                             // The current item follows the pivot in the sorted order.
-//                             // Shift the current item one spot upwards, to make room
-//                             //   for inserting the pivot below it.
-
-//                             distList[low + 1] = distList[low];
-//                             indexList[low + 1] = indexList[low];
-//                             low--;
-//                         }
-//                     } else {
-//                         // Oh no!
-//                         // We opened up an empty slot for the pivot,
-//                         //   only to find that it's a duplicate of the current item!
-//                         // Close the slot up again, and eliminate the duplicate.
-
-//                         for (i = low + 1; i < high; i++) {
-//                             distList[i] = distList[i + 1];
-//                             indexList[i] = indexList[i + 1];
-//                         }
-
-//                         // To eliminate the duplicate, overwrite its location with the
-//                         //   item from the end of the range, and then shrink the range
-//                         //   by one.
-
-//                         distList[high] = distList[rangeLast];
-//                         indexList[high] = indexList[rangeLast];
-//                         rangeLast--;
-
-//                         // The next iteration must not advance "high", since we've
-//                         //   just put a new element into it which needs to be processed.
-//                         // Decrementing it here will cancel out with the incrementation
-//                         //   of the next iteration.
-
-//                         high--;
-
-//                         // When we break the loop, the pivot element will be put
-//                         //   in its proper place ("low" + 1)
-//                         // Here, the proper place is where rangeLast used to be.
-//                         // To achieve this, we need to adjust "low" here.
-
-//                         low = rangeLast;
-
-//                         break;
-//                     }
-//                 }
-//             }
-
-//             // If we've made it to here, we've found the insertion
-//             //   spot for the current element.
-//             // Perform the insertion.
-
-//             low++;
-//             distList[low] = pivotDist;
-//             indexList[low] = pivotIndex;
-
-//             // Move to the next item to be inserted in the growing sorted list.
-
-//             high++;
-//         }
-
-//         // Return the number of sorted items found.
-
-//         numFound = rangeLast - rangeFirst + 1;
-
-//         if (numFound > howMany) {
-//             numFound = howMany;
-//         }
-
-//         return numFound;
-//     }
-
-//     // The range to be sorted is large, so do a partial quicksort.
-//     // Select a pivot item, and swap it with the item at the beginning
-//     //   of the range.
-
-//     pivotLoc = rangeFirst + (rand.integer() % (rangeLast - rangeFirst + 1));
-//     tieBreakIndex = indexList[rand.integer() % (rangeLast - rangeFirst + 1)];
-
-//     pivotDist = distList[pivotLoc];
-//     distList[pivotLoc] = distList[rangeFirst];
-//     distList[rangeFirst] = pivotDist;
-
-//     pivotIndex = indexList[pivotLoc];
-//     indexList[pivotLoc] = indexList[rangeFirst];
-//     indexList[rangeFirst] = pivotIndex;
-
-//     // Eliminate all duplicates of the pivot.
-//     // Any duplicates found are pushed to the end of the range, and
-//     //   the range shrunk by one (thereby excluding them).
-
-//     i = rangeFirst + 1;
-
-//     while (i <= rangeLast) {
-//         if ((pivotIndex == indexList[i]) && (pivotDist == distList[i])) {
-//             distList[i] = distList[rangeLast];
-//             indexList[i] = indexList[rangeLast];
-//             rangeLast--;
-//         } else {
-//             i++;
-//         }
-//     }
-
-//     // Partition the remaining items with respect to the pivot.
-//     // This efficient method is adapted from the one outlined in
-//     //   Cormen, Leiserson & Rivest.
-//     // The range is scanned from both ends.
-//     // Items with small distances are placed below "low", and those
-//     //   with large distances are placed above "high".
-//     // Where "low" and "high" meet, the pivot item is inserted.
-
-//     low = rangeFirst;
-//     high = rangeLast + 1;
-
-//     while (TRUE) {
-//         // Move the "high" endpoint down until it meets either the pivot,
-//         //   or something that belongs on the "low" side.
-//         // If the key values are tied, decide pseudo-randomly.
-
-//         do {
-//             high--;
-//         } while (
-//                 (distList[high] > pivotDist)
-//                 ||
-//                 (
-//                 (distList[high] == pivotDist)
-//                 &&
-//                 (high > low)
-//                 &&
-//                 (
-//                 (
-//                 (tieBreakIndex >= pivotIndex)
-//                 &&
-//                 (
-//                 (pivotIndex < indexList[high])
-//                 &&
-//                 (indexList[high] <= tieBreakIndex)
-//                 )
-//                 )
-//                 ||
-//                 (
-//                 (tieBreakIndex < pivotIndex)
-//                 &&
-//                 (
-//                 (pivotIndex < indexList[high])
-//                 ||
-//                 (indexList[high] <= tieBreakIndex)
-//                 )
-//                 )
-//                 )
-//                 )
-//                 );
-
-//         // Move the "low" endpoint up until it meets either the "high" endpoint,
-//         //   or something that belongs on the "high" side.
-//         // If the key values are tied, decide pseudo-randomly.
-
-//         do {
-//             low++;
-//         } while (
-//                 (low < high)
-//                 &&
-//                 (
-//                 (distList[low] < pivotDist)
-//                 ||
-//                 (
-//                 (distList[low] == pivotDist)
-//                 &&
-//                 (
-//                 (
-//                 (tieBreakIndex >= pivotIndex)
-//                 &&
-//                 (
-//                 (indexList[low] <= pivotIndex)
-//                 ||
-//                 (tieBreakIndex < indexList[low])
-//                 )
-//                 )
-//                 ||
-//                 (
-//                 (tieBreakIndex < pivotIndex)
-//                 &&
-//                 (
-//                 (indexList[low] <= pivotIndex)
-//                 &&
-//                 (tieBreakIndex < indexList[low])
-//                 )
-//                 )
-//                 )
-//                 )
-//                 )
-//                 );
-
-//         // Have the "low" and "high" endpoints crossed?
-//         // If not, we still have more work to do.
-
-//         if (low < high) {
-//             // Swap the misplaced items, and try again.
-
-//             tempDist = distList[low];
-//             distList[low] = distList[high];
-//             distList[high] = tempDist;
-
-//             tempIndex = indexList[low];
-//             indexList[low] = indexList[high];
-//             indexList[high] = tempIndex;
-//         } else {
-//             // We found the cross-over point.
-
-//             break;
-//         }
-//     }
-
-//     // The pivot value ends up at the location referenced by "high".
-//     // Swap it with the pivot (which resides at the beginning of the range).
-
-//     distList[rangeFirst] = distList[high];
-//     distList[high] = pivotDist;
-
-//     indexList[rangeFirst] = indexList[high];
-//     indexList[high] = pivotIndex;
-
-//     pivotLoc = high;
-
-//     // The partition is complete.
-//     // Recursively sort the items with smaller distance.
-
-//     numFound = partialQuickSort(howMany, distList, indexList, rangeFirst, pivotLoc - 1);
-
-//     // If we found enough items (including the pivot), then we are done.
-//     // Make sure the pivot is in its correct position, if it is used.
-
-//     if (numFound >= howMany - 1) {
-//         if (numFound == howMany - 1) {
-//             distList[rangeFirst + numFound] = pivotDist;
-//             indexList[rangeFirst + numFound] = pivotIndex;
-//         }
-
-//         return howMany;
-//     }
-
-//     // We didn't find enough items, even taking the pivot into account.
-//     // Were any duplicates discovered during this call?
-
-//     if (numFound < pivotLoc - rangeFirst) {
-//         // Duplicates were discovered!
-//         // Figure out the minimum number of duplicates that must be
-//         //   replaced by items from the end of the range in order to
-//         //   leave the non-duplicates in contiguous locations.
-
-//         numDuplicatesToReplace = pivotLoc - rangeFirst - numFound;
-//         high = rangeLast;
-
-//         if (numDuplicatesToReplace > rangeLast - pivotLoc) {
-//             numDuplicatesToReplace = rangeLast - pivotLoc;
-//             rangeLast = rangeFirst + numFound + numDuplicatesToReplace;
-//         } else {
-//             rangeLast -= numDuplicatesToReplace;
-//         }
-
-//         // Replace the required number of duplicates by items from
-//         //   the end of the range.
-//         // The size of the range will shrink as a result.
-
-//         low = rangeFirst + numFound + 1;
-
-//         for (i = 0; i < numDuplicatesToReplace; i++) {
-//             distList[low] = distList[high];
-//             indexList[low] = indexList[high];
-//             low++;
-//             high--;
-//         }
-//     }
-
-//     // Put the pivot element in its proper place.
-
-//     distList[rangeFirst + numFound] = pivotDist;
-//     indexList[rangeFirst + numFound] = pivotIndex;
-
-//     // Finish up by sorting larger-distance items.
-//     // Note that the number of sorted items needed has dropped.
-
-//     return numFound + 1 + partialQuickSort
-//             (howMany - numFound - 1,
-//             distList, indexList,
-//             rangeFirst + numFound + 1, rangeLast);
+#else
+    int i;
+    int pivotLoc = 0;
+    int pivotIndex = 0;
+    float pivotDist = 0.0F;
+    int tempIndex = 0;
+    float tempDist = 0.0F;
+    int low = 0;
+    int high = 0;
+    int numFound = 0;
+    int numDuplicatesToReplace = 0;
+    int tieBreakIndex = 0;
+
+    // If the range is empty, or if we've been asked to sort no
+    //   items, then return immediately.
+
+    if ((rangeLast < rangeFirst) || (howMany < 1)) {
+        return 0;
+    }
+
+    // If there is exactly one element, then again there is nothing
+    //   that need be done.
+
+    if (rangeLast == rangeFirst) {
+        return 1;
+    }
+
+    // If the range to be sorted is small, just do an insertion sort.
+
+    if (rangeLast - rangeFirst < 7) {
+        high = rangeFirst + 1;
+        tieBreakIndex = indexList[rand.integer() % (rangeLast - rangeFirst + 1)];
+
+        // The outer while loop considers each item in turn (starting
+        //   with the second item in the range), for insertion into
+        //   the sorted list of items that precedes it.
+
+        while (high <= rangeLast) {
+            // Copy the next item to be inserted, as the "pivot".
+            // Start the insertion tests with its immediate predecessor.
+
+            pivotDist = distList[high];
+            pivotIndex = indexList[high];
+            low = high - 1;
+
+            // Work our way down through previously-sorted items
+            //   towards the start of the range.
+
+            while (low >= rangeFirst) {
+                // Compare the item to be inserted (the "pivot") with
+                //   the current item.
+
+                if (distList[low] < pivotDist) {
+                    // The current item precedes the pivot in the sorted order.
+                    // Break out of the loop - we have found the insertion point.
+
+                    break;
+                } else if (distList[low] > pivotDist) {
+                    // The current item follows the pivot in the sorted order.
+                    // Shift the current item one spot upwards, to make room
+                    //   for inserting the pivot below it.
+
+                    distList[low + 1] = distList[low];
+                    indexList[low + 1] = indexList[low];
+                    low--;
+                } else {
+                    if (indexList[low] != pivotIndex) {
+                        // The items have the same sort value but are not identical.
+                        // Break the tie pseudo-randomly.
+
+                        if (
+                                (
+                                (tieBreakIndex >= pivotIndex)
+                                &&
+                                (
+                                (indexList[low] < pivotIndex)
+                                ||
+                                (tieBreakIndex < indexList[low])
+                                )
+                                )
+                                ||
+                                (
+                                (tieBreakIndex < pivotIndex)
+                                &&
+                                (
+                                (indexList[low] < pivotIndex)
+                                &&
+                                (tieBreakIndex < indexList[low])
+                                )
+                                )
+                                ) {
+                            // The current item precedes the pivot in the sorted order.
+                            // Break out of the loop - we have found the insertion point.
+
+                            break;
+                        } else {
+                            // The current item follows the pivot in the sorted order.
+                            // Shift the current item one spot upwards, to make room
+                            //   for inserting the pivot below it.
+
+                            distList[low + 1] = distList[low];
+                            indexList[low + 1] = indexList[low];
+                            low--;
+                        }
+                    } else {
+                        // Oh no!
+                        // We opened up an empty slot for the pivot,
+                        //   only to find that it's a duplicate of the current item!
+                        // Close the slot up again, and eliminate the duplicate.
+
+                        for (i = low + 1; i < high; i++) {
+                            distList[i] = distList[i + 1];
+                            indexList[i] = indexList[i + 1];
+                        }
+
+                        // To eliminate the duplicate, overwrite its location with the
+                        //   item from the end of the range, and then shrink the range
+                        //   by one.
+
+                        distList[high] = distList[rangeLast];
+                        indexList[high] = indexList[rangeLast];
+                        rangeLast--;
+
+                        // The next iteration must not advance "high", since we've
+                        //   just put a new element into it which needs to be processed.
+                        // Decrementing it here will cancel out with the incrementation
+                        //   of the next iteration.
+
+                        high--;
+
+                        // When we break the loop, the pivot element will be put
+                        //   in its proper place ("low" + 1)
+                        // Here, the proper place is where rangeLast used to be.
+                        // To achieve this, we need to adjust "low" here.
+
+                        low = rangeLast;
+
+                        break;
+                    }
+                }
+            }
+
+            // If we've made it to here, we've found the insertion
+            //   spot for the current element.
+            // Perform the insertion.
+
+            low++;
+            distList[low] = pivotDist;
+            indexList[low] = pivotIndex;
+
+            // Move to the next item to be inserted in the growing sorted list.
+
+            high++;
+        }
+
+        // Return the number of sorted items found.
+
+        numFound = rangeLast - rangeFirst + 1;
+
+        if (numFound > howMany) {
+            numFound = howMany;
+        }
+
+        return numFound;
+    }
+
+    // The range to be sorted is large, so do a partial quicksort.
+    // Select a pivot item, and swap it with the item at the beginning
+    //   of the range.
+
+    pivotLoc = rangeFirst + (rand.integer() % (rangeLast - rangeFirst + 1));
+    tieBreakIndex = indexList[rand.integer() % (rangeLast - rangeFirst + 1)];
+
+    pivotDist = distList[pivotLoc];
+    distList[pivotLoc] = distList[rangeFirst];
+    distList[rangeFirst] = pivotDist;
+
+    pivotIndex = indexList[pivotLoc];
+    indexList[pivotLoc] = indexList[rangeFirst];
+    indexList[rangeFirst] = pivotIndex;
+
+    // Eliminate all duplicates of the pivot.
+    // Any duplicates found are pushed to the end of the range, and
+    //   the range shrunk by one (thereby excluding them).
+
+    i = rangeFirst + 1;
+
+    while (i <= rangeLast) {
+        if ((pivotIndex == indexList[i]) && (pivotDist == distList[i])) {
+            distList[i] = distList[rangeLast];
+            indexList[i] = indexList[rangeLast];
+            rangeLast--;
+        } else {
+            i++;
+        }
+    }
+
+    // Partition the remaining items with respect to the pivot.
+    // This efficient method is adapted from the one outlined in
+    //   Cormen, Leiserson & Rivest.
+    // The range is scanned from both ends.
+    // Items with small distances are placed below "low", and those
+    //   with large distances are placed above "high".
+    // Where "low" and "high" meet, the pivot item is inserted.
+
+    low = rangeFirst;
+    high = rangeLast + 1;
+
+    while (TRUE) {
+        // Move the "high" endpoint down until it meets either the pivot,
+        //   or something that belongs on the "low" side.
+        // If the key values are tied, decide pseudo-randomly.
+
+        do {
+            high--;
+        } while (
+                (distList[high] > pivotDist)
+                ||
+                (
+                (distList[high] == pivotDist)
+                &&
+                (high > low)
+                &&
+                (
+                (
+                (tieBreakIndex >= pivotIndex)
+                &&
+                (
+                (pivotIndex < indexList[high])
+                &&
+                (indexList[high] <= tieBreakIndex)
+                )
+                )
+                ||
+                (
+                (tieBreakIndex < pivotIndex)
+                &&
+                (
+                (pivotIndex < indexList[high])
+                ||
+                (indexList[high] <= tieBreakIndex)
+                )
+                )
+                )
+                )
+                );
+
+        // Move the "low" endpoint up until it meets either the "high" endpoint,
+        //   or something that belongs on the "high" side.
+        // If the key values are tied, decide pseudo-randomly.
+
+        do {
+            low++;
+        } while (
+                (low < high)
+                &&
+                (
+                (distList[low] < pivotDist)
+                ||
+                (
+                (distList[low] == pivotDist)
+                &&
+                (
+                (
+                (tieBreakIndex >= pivotIndex)
+                &&
+                (
+                (indexList[low] <= pivotIndex)
+                ||
+                (tieBreakIndex < indexList[low])
+                )
+                )
+                ||
+                (
+                (tieBreakIndex < pivotIndex)
+                &&
+                (
+                (indexList[low] <= pivotIndex)
+                &&
+                (tieBreakIndex < indexList[low])
+                )
+                )
+                )
+                )
+                )
+                );
+
+        // Have the "low" and "high" endpoints crossed?
+        // If not, we still have more work to do.
+
+        if (low < high) {
+            // Swap the misplaced items, and try again.
+
+            tempDist = distList[low];
+            distList[low] = distList[high];
+            distList[high] = tempDist;
+
+            tempIndex = indexList[low];
+            indexList[low] = indexList[high];
+            indexList[high] = tempIndex;
+        } else {
+            // We found the cross-over point.
+
+            break;
+        }
+    }
+
+    // The pivot value ends up at the location referenced by "high".
+    // Swap it with the pivot (which resides at the beginning of the range).
+
+    distList[rangeFirst] = distList[high];
+    distList[high] = pivotDist;
+
+    indexList[rangeFirst] = indexList[high];
+    indexList[high] = pivotIndex;
+
+    pivotLoc = high;
+
+    // The partition is complete.
+    // Recursively sort the items with smaller distance.
+
+    numFound = partialQuickSort(howMany, distList, indexList, rangeFirst, pivotLoc - 1);
+
+    // If we found enough items (including the pivot), then we are done.
+    // Make sure the pivot is in its correct position, if it is used.
+
+    if (numFound >= howMany - 1) {
+        if (numFound == howMany - 1) {
+            distList[rangeFirst + numFound] = pivotDist;
+            indexList[rangeFirst + numFound] = pivotIndex;
+        }
+
+        return howMany;
+    }
+
+    // We didn't find enough items, even taking the pivot into account.
+    // Were any duplicates discovered during this call?
+
+    if (numFound < pivotLoc - rangeFirst) {
+        // Duplicates were discovered!
+        // Figure out the minimum number of duplicates that must be
+        //   replaced by items from the end of the range in order to
+        //   leave the non-duplicates in contiguous locations.
+
+        numDuplicatesToReplace = pivotLoc - rangeFirst - numFound;
+        high = rangeLast;
+
+        if (numDuplicatesToReplace > rangeLast - pivotLoc) {
+            numDuplicatesToReplace = rangeLast - pivotLoc;
+            rangeLast = rangeFirst + numFound + numDuplicatesToReplace;
+        } else {
+            rangeLast -= numDuplicatesToReplace;
+        }
+
+        // Replace the required number of duplicates by items from
+        //   the end of the range.
+        // The size of the range will shrink as a result.
+
+        low = rangeFirst + numFound + 1;
+
+        for (i = 0; i < numDuplicatesToReplace; i++) {
+            distList[low] = distList[high];
+            indexList[low] = indexList[high];
+            low++;
+            high--;
+        }
+    }
+
+    // Put the pivot element in its proper place.
+
+    distList[rangeFirst + numFound] = pivotDist;
+    indexList[rangeFirst + numFound] = pivotIndex;
+
+    // Finish up by sorting larger-distance items.
+    // Note that the number of sorted items needed has dropped.
+
+    return numFound + 1 + partialQuickSort
+            (howMany - numFound - 1,
+            distList, indexList,
+            rangeFirst + numFound + 1, rangeLast);
+#endif
 }
 
 /*!
