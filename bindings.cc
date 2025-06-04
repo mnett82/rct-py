@@ -85,31 +85,8 @@ extern "C" int rct_find_near(
 
     Vec query(wrapper->cols, static_cast<float *>(query_ptr));
 
-    float m = 0.0f;
-    for (int i = 0; i < wrapper->cols; ++i) {
-        m+= pow(query.values[i], 2.0);
-    }
-    m = sqrtf(m);
-    printf("Query vector length: %f\n", m);
-
-    // printf("Q [[ %f", query.values[0]);
-    // for (int i = 1; i < query.len; ++i) {
-    //     printf(", %f", query.values[i]);
-    // }
-    // printf(" ]]\n");
-
     const int num_found = wrapper->rct->findNearest(&query, how_many);
     wrapper->rct->getResultIndices(result, num_found);
-
-    for (int i = 0; i < num_found; ++i) {
-        result[i] += 1;
-    }
-
-    // printf("<< %d", result[0]);
-    // for (int i = 1; i < num_found; ++i) {
-    //     printf(", %d", result[i]);
-    // }
-    // printf(" >>\n");
 
     return num_found;
 }
