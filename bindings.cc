@@ -38,6 +38,7 @@ struct Vec final : public DistData
             out << ", " << v[i];
         }
         out << ")";
+        return out.str();
     }
 };
 
