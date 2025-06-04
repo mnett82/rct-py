@@ -1530,35 +1530,6 @@ int RCT::doFindNearest(int howMany, int sampleLevel) {
  */
 #define WTF
 int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rangeFirst, int rangeLast) {
-#ifdef WTF
-    if (rangeLast < rangeFirst || howMany < 1) {
-        return 0;
-    }
-
-    std::vector<std::pair<float, int>> pairs;
-    pairs.reserve(rangeLast - rangeFirst + 1);
-    for (int i = rangeFirst; i < rangeLast; ++i) {
-        pairs.emplace_back(distList[i], indexList[i]);
-    }
-    std::sort(pairs.begin(), pairs.end());
-    for (int i = 0; i < pairs.size(); ++i) {
-        distList[rangeFirst + i] = pairs[i].first;
-        indexList[rangeFirst + i] = pairs[i].second;
-    }
-    return rangeLast - rangeFirst;
-#else
-    int i;
-    int pivotLoc = 0;
-    int pivotIndex = 0;
-    float pivotDist = 0.0F;
-    int tempIndex = 0;
-    float tempDist = 0.0F;
-    int low = 0;
-    int high = 0;
-    int numFound = 0;
-    int numDuplicatesToReplace = 0;
-    int tieBreakIndex = 0;
-
     // If the range is empty, or if we've been asked to sort no
     //   items, then return immediately.
 
@@ -1572,6 +1543,40 @@ int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rang
     if (rangeLast == rangeFirst) {
         return 1;
     }
+    
+#ifdef WTF
+    std::vector<std::pair<float, int>> pairs;
+    pairs.reserve(rangeLast - rangeFirst + 1);
+    for (int i = rangeFirst; i < rangeLast; ++i) {
+        pairs.emplace_back(distList[i], indexList[i]);
+    }
+    std::sort(pairs.begin(), pairs.end());
+    for (int i = 0; i < pairs.size(); ++i) {
+        distList[rangeFirst + i] = pairs[i].first;
+        indexList[rangeFirst + i] = pairs[i].second;
+    }
+
+    int numFound = rangeLast - rangeFirst + 1;
+
+    if (numFound > howMany) {
+        numFound = howMany;
+    }
+
+    return numFound;
+#else
+    int i;
+    int pivotLoc = 0;
+    int pivotIndex = 0;
+    float pivotDist = 0.0F;
+    int tempIndex = 0;
+    float tempDist = 0.0F;
+    int low = 0;
+    int high = 0;
+    int numFound = 0;
+    int numDuplicatesToReplace = 0;
+    int tieBreakIndex = 0;
+
+
 
     // If the range to be sorted is small, just do an insertion sort.
 
