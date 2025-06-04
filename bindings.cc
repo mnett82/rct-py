@@ -85,9 +85,9 @@ extern "C" int rct_find_near(
 
     Vec query(wrapper->cols, static_cast<float *>(query_ptr));
 
-    printf("Q [[ %d", query.values[0]);
-    for (int i = 1; i < num_found; ++i) {
-        printf(", %d", query.values[i]);
+    printf("Q [[ %f", query.values[0]);
+    for (int i = 1; i < query.len; ++i) {
+        printf(", %f", query.values[i]);
     }
     printf(" ]]\n");
 
