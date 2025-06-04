@@ -73,16 +73,12 @@ class RCT:
 
         q_ptr = q.ctypes.data_as(c_void_p)
 
-        result = list(range(n))
-        # result = np.zeros(n, dtype=np.int32)
-        # result_ptr = result.ctypes.data_as(POINTER(c_int))
-        result_ptr = (c_int * n)(*result)
+        results = np.zeros(n, dtype=np.int32)
+        results_ptr = results.ctypes.data_as(POINTER(c_int))
 
-        print([q_ptr, result_ptr])
+        RCT._c_lib.rct_find_near(self._rct, q_ptr, n, results_ptr)
 
-        RCT._c_lib.rct_find_near(self._rct, q_ptr, n, result_ptr)
-
-        return result
+        return results
 
 if __name__ == "__main__":
     data_float32 = np.array([[1.0, 2.0, 3.0],
