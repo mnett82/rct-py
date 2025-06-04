@@ -1528,7 +1528,7 @@ int RCT::doFindNearest(int howMany, int sampleLevel) {
  *
  * @return Number of items sorted.
  */
-//#define WTF
+#define WTF
 int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rangeFirst, int rangeLast) {
 #ifdef WTF
     if (rangeLast < rangeFirst || howMany < 1) {
@@ -1545,7 +1545,7 @@ int RCT::partialQuickSort(int howMany, float* distList, int* indexList, int rang
         distList[rangeFirst + i] = pairs[i].first;
         indexList[rangeFirst + i] = pairs[i].second;
     }
-    return rangeLast - rangeFirst + 1;
+    return rangeLast - rangeFirst;
 #else
     int i;
     int pivotLoc = 0;
