@@ -9,19 +9,23 @@
 
 struct Vec final : public DistData
 {
-    std::size_t len;
-    float *values;
+    std::vector<float> v;
 
-    Vec(std::size_t len, float *values) : len(len), values(values) {}
+    Vec(std::size_t len, float *values) {
+        v.reserve(len);
+        for (int i = 0 ;i < len; ++i) {
+            v.push_back(values[i]);
+        }
+    }
 
     float distanceTo(DistData *other) override
     {
         const Vec *p = static_cast<Vec *>(other);
 
         float d = 0.0f;
-        for (int i = 0; i < len; ++i)
+        for (int i = 0; i < v.size(); ++i)
         {
-            const float s = values[i] - p->values[i];
+            const float s = v[i] - p->v[i];
             d += s * s;
         }
         return sqrtf(d);
@@ -29,9 +33,9 @@ struct Vec final : public DistData
 
     std::string debugString() {
         std::ostringstream out;
-        out << "Vec(" << values[0];
-        for (int i = 1; i < len; ++i) {
-            out << ", " << values[i];
+        out << "Vec(" << v[0];
+        for (int i = 1; i < v.size(); ++i) {
+            out << ", " << v[i];
         }
         out << ")";
     }
