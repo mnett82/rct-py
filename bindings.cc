@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <vector>
 #include <memory>
+#include <algorithm>
 
 #include "rct.h"
 #include "DistData.h"
@@ -61,7 +62,7 @@ extern "C" void *rct_build(
 {
     auto *wrapper = new RctWrapper();
 
-    wrapper->cols = cols;
+    // wrapper->cols = cols;
 
     wrapper->points.reserve(rows);
     for (int row = 0; row < rows; ++row)
@@ -70,17 +71,17 @@ extern "C" void *rct_build(
             cols, &static_cast<float *>(data_ptr)[row * cols]);
     }
 
-    wrapper->data.reserve(rows);
-    for (int row = 0; row < rows; ++row)
-    {
-        wrapper->data.push_back(static_cast<DistData *>(&wrapper->points[row]));
-    }
+    // wrapper->data.reserve(rows);
+    // for (int row = 0; row < rows; ++row)
+    // {
+    //     wrapper->data.push_back(static_cast<DistData *>(&wrapper->points[row]));
+    // }
 
-    wrapper->rct = std::make_unique<RCT>(seed);
-    wrapper->rct->setVerbosity(verbosity);
-    wrapper->rct->setCoverageParameter(coverage);
-    wrapper->rct->setSampleRate(sample_rate);
-    wrapper->rct->build(wrapper->data.data(), wrapper->data.size());
+    // wrapper->rct = std::make_unique<RCT>(seed);
+    // wrapper->rct->setVerbosity(verbosity);
+    // wrapper->rct->setCoverageParameter(coverage);
+    // wrapper->rct->setSampleRate(sample_rate);
+    // wrapper->rct->build(wrapper->data.data(), wrapper->data.size());
 
     return wrapper;
 }
@@ -100,8 +101,36 @@ extern "C" int rct_find_near(
 
     Vec query(wrapper->cols, static_cast<float *>(query_ptr));
 
-    const int num_found = wrapper->rct->findNearest(&query, how_many);
-    wrapper->rct->getResultIndices(result, num_found);
+    std::vector<int> ids;
+    ids.reserve(wrapper->points.size());
+    for (int i = 0 ; i < static_cast<int>(wrapper->points.size()); ++i) {
+        ids.push_back(i);
+    }
+    std::vector<float> dists(wrapper->points.size(), -1.0);
+
+    std::sort(
+        ids.begin(),
+        ids.end(),
+        [&](int i, int j) {
+            if (dists[ids[i]] < 0.0) {
+                dists[ids[i]] = wrapper->points[ids[i]].distanceTo(&query);
+            }
+            if (dists[ids[j]] < 0.0) {
+                dists[ids[j]] = wrapper->points[ids[j]].distanceTo(&query);
+            }
+            return dists[ids[i]] < dists[ids[j]];
+        });
+
+    if (static_cast<int>(ids.size()) > how_many) {
+        ids.resize(how_many);
+    }
+
+    for (std::size_t i = 0; i < ids.size(); ++i) {
+        result[i] = ids[i];
+    }
+
+    // const int num_found = wrapper->rct->findNearest(&query, how_many);
+    // wrapper->rct->getResultIndices(result, num_found);
 
     // printf("<<%d", result[0]);
     // for (int i = 1; i < num_found; ++i) {
@@ -113,5 +142,5 @@ extern "C" int rct_find_near(
     //     printf("#%d --> %s\n", i, wrapper->points[result[i]].debugString().c_str());
     // }
 
-    return num_found;
+    return static_cast<int>(ids.size());
 }
